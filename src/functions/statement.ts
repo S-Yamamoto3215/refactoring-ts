@@ -12,6 +12,21 @@ export function statement(invoice: invoice, plays: plays) {
       minimumFractionDigits: 2
     }).format;
 
+  for (let perf of invoice.performances) {
+    volumeCredits += volumeCreditsFor(perf);
+
+    result += ` ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
+      perf.audience
+    } seats)\n`;
+    totalAmount += amountFor(perf);
+  }
+
+  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `You earned ${volumeCredits} credits`;
+
+  return result;
+
+  // Extracted functions
   function playFor(aPerformance: performance) {
     return plays[aPerformance.playID];
   }
@@ -38,20 +53,10 @@ export function statement(invoice: invoice, plays: plays) {
     return result;
   }
 
-  for (let perf of invoice.performances) {
-    // add volume credits
+  function volumeCreditsFor(perf: performance) {
+    let volumeCredits = 0;
     volumeCredits += Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type)
-      volumeCredits += Math.floor(perf.audience / 5);
-
-    result += ` ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
-      perf.audience
-    } seats)\n`;
-    totalAmount += amountFor(perf);
+    if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+    return volumeCredits;
   }
-
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits`;
-
-  return result;
 }
