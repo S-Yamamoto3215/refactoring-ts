@@ -1,9 +1,18 @@
-import { invoice, plays, performance, play } from "../types";
+import { invoice, plays, performance, statementData } from "../types";
 
 export function statement(invoice: invoice, plays: plays) {
-  let result = `Statement for ${invoice.customer}\n`;
+  const statementData: statementData = {
+    customer: invoice.customer,
+    performances: invoice.performances,
+  };
+  return renderPlainText(statementData, plays);
+}
 
-  for (let perf of invoice.performances) {
+
+export function renderPlainText(data: statementData, plays: plays) {
+  let result = `Statement for ${data.customer}\n`;
+
+  for (let perf of data.performances) {
     result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${
       perf.audience
     } seats)\n`;
@@ -62,7 +71,7 @@ export function statement(invoice: invoice, plays: plays) {
 
   function totalVolumeCredits() {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += volumeCreditsFor(perf);
     }
     return result;
@@ -70,7 +79,7 @@ export function statement(invoice: invoice, plays: plays) {
 
   function totalAmount() {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += amountFor(perf);
     }
     return result;

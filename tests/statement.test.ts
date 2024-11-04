@@ -1,5 +1,5 @@
 import { statement } from "../src/functions/statement";
-import { invoice, plays } from "../src/types";
+import { invoice, plays, customer } from "../src/types";
 
 describe("statement", () => {
   const plays: plays = {

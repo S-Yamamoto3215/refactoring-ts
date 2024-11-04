@@ -15,6 +15,15 @@ export type performance = {
 }
 
 export type invoice = {
-  customer: string;
+  customer: customer["name"];
   performances: performance[];
-}
+};
+
+export type customer = {
+  name: string;
+};
+
+export type statementData = {
+  customer: customer["name"];
+  performances: performance[];
+};
