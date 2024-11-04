@@ -1,17 +1,15 @@
 import { invoice, plays, performance, play } from "../types";
 
 export function statement(invoice: invoice, plays: plays) {
-  let totalAmount = 0;
   let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
     result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${
       perf.audience
     } seats)\n`;
-    totalAmount += amountFor(perf);
   }
 
-  result += `Amount owed is ${usd(totalAmount / 100)}\n`;
+  result += `Amount owed is ${usd(totalAmount() / 100)}\n`;
   result += `You earned ${totalVolumeCredits()} credits`;
 
   return result;
@@ -63,10 +61,18 @@ export function statement(invoice: invoice, plays: plays) {
   }
 
   function totalVolumeCredits() {
-    let volumeCredits = 0;
+    let result = 0;
     for (let perf of invoice.performances) {
-      volumeCredits += volumeCreditsFor(perf);
+      result += volumeCreditsFor(perf);
     }
-    return volumeCredits;
+    return result;
+  }
+
+  function totalAmount() {
+    let result = 0;
+    for (let perf of invoice.performances) {
+      result += amountFor(perf);
+    }
+    return result;
   }
 }
